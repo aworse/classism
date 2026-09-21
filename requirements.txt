@@ -1,0 +1,6 @@
+numpy>=1.26
+pyyaml
+jsonschema>=4
+matplotlib
+pytest
+torch>=2.2

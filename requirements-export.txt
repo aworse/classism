@@ -1,0 +1,7 @@
+# Export toolchain (ONNX -> TFLite int8). Run on a workstation, not the Codespace.
+-r requirements.txt
+onnx
+onnxruntime
+onnxscript
+tensorflow
+onnx2tf
