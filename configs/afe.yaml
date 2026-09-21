@@ -1,0 +1,37 @@
+# AFE configuration (spec §9). Values below are validated against the frozen log-mel regime (src/melio.py).
+labels:
+  num_classes: 38                 # 33 jamo + 5 special tokens
+input:                            # frozen log-mel regime (consumed, not produced)
+  n_mels: 64
+  frames: 48
+  sample_rate: 48000
+  normalization: per_clip_zscore
+model:
+  name: smallcnn                  # smallcnn (deployed) | coatnetlite (offline comparison only)
+  dropout: 0.2
+infer:
+  top_n: 5
+  calibrate: true                 # use calibration.json next to the checkpoint when present
+  temperature: 1.0                # overwritten by calibrate.py's fitted value
+  batch_size: 64
+export:
+  runtime: tflite_int8
+  calib_clips: 300                # representative samples for PTQ
+  max_top1_drop_pp: 2.0           # AC-6
+  max_size_bytes: 1000000         # NFR-1 (~1 MB int8 weights)
+train:
+  split: session                  # session | participant | random
+  seed: 1234
+  epochs: 30
+  batch_size: 64
+  lr: 0.002
+  weight_decay: 0.0001
+  label_smoothing: 0.0
+  class_weighted: false
+  val_frac: 0.1
+  test_frac: 0.2
+data:
+  min_per_jamo: 25                # per participant (spec §7)
+  min_per_special: 25             # assumption: spec leaves the special-token minimum open (O-Q6)
+eval:
+  n_bins: 15                      # ECE bins
